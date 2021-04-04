@@ -23,13 +23,14 @@ def make_move(board: chess.Board, time_remaining: float) -> str:
     # Get some interesting information
     legal_moves = list(board.legal_moves)
 
-    best_move = legal_moves[0]
+    best_move = None
     best_type = 0
     for move in legal_moves:
         t = board.piece_type_at(move.to_square)
-        if t > best_type:
+        if t is not None and t > best_type:
             best_move = move
-    if best_type == 0:
+            best_type = t
+    if best_move is None:
         best_move = random.choice(legal_moves)
 
     # Return the code of the move
