@@ -21,12 +21,16 @@ def make_move(board: chess.Board, time_remaining: float) -> str:
     """
 
     # Get some interesting information
-    playing_white = board.turn == chess.WHITE
     legal_moves = list(board.legal_moves)
-    am_i_in_check = board.is_check()
 
-    # TODO: Figure out some clever logic to make a good move
-    move = random.choice(legal_moves)
+    best_move = legal_moves[0]
+    best_type = 0
+    for move in legal_moves:
+        t = board.piece_type_at(move.to_square)
+        if t > best_type:
+            best_move = move
+    if best_type == 0:
+        best_move = random.choice(legal_moves)
 
     # Return the code of the move
-    return move.uci()
+    return best_move.uci()
