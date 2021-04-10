@@ -21,15 +21,23 @@ def make_move(board: chess.Board, time_remaining: float) -> str:
     """
 
     # Get some interesting information
+    opponent_color = chess.BLACK if board.turn == chess.WHITE else chess.WHITE
     legal_moves = list(board.legal_moves)
 
     best_move = None
-    best_type = 0
+    best_cost = -1000000
     for move in legal_moves:
-        t = board.piece_type_at(move.to_square)
-        if t is not None and t > best_type:
+        taken = board.piece_type_at(move.to_square)
+        taken_cost = [0, 1, 3, 3, 5, 10, 100][taken] if taken is not None else 0
+        lost_cost = [0, 1, 3, 3, 5, 10, 100][board.piece_type_at(move.from_square)]
+
+        cost = taken_cost
+        if board.is_attacked_by(opponent_color, move.to_square):
+            cost -= lost_cost
+
+        if taken is not None and cost > best_cost:
             best_move = move
-            best_type = t
+            best_cost = cost
     if best_move is None:
         best_move = random.choice(legal_moves)
 
